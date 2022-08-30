@@ -1,0 +1,1406 @@
+openapi: "3.0.0"
+info:
+  version: "1.0.0"
+  title: "Datenplattform Darmstadt API"
+  description: "Datenplattform der Wissenschaftsstadt Darmstadt
+
+  Die Datenplattform soll nach Angaben der Digitalstadt Darmstadt GmbH zum Sammeln, Verarbeiten, Vernetzen, Analysieren und Visualisieren von Daten aus dem städtischen Alltag dienen.
+
+
+  Die Plattform ging im Februar 2021 online und die Kosten sollen sich in den Jahren 2020-2026 auf maximal 6,3 Mio. Euro (!) belaufen. Hierbei ist die Datenplattform nicht Open Source, es sollen allerdings 'einzelne Bestandteile' gesondert als Open Source zur Verfügung gestellt werden [[Quelle](https://www.digitalstadt-darmstadt.de/datenplattform-beteiligung/)].
+
+ ### CORS
+
+  Die Datenplattform verfügt leider nicht über einen `Access-Control-Allow-Origin: *` Header. Daher funktionieren die Testabfragen innerhalb der Swagger UI nicht. Die angegebenen `CURL`-Befehle funktionieren in einer Konsole.
+
+
+  Zum Testen kann ein kostenloser CORS-Service verwendet werden (siehe Serverauswahl). Dieser CORS-Server wird von imjacobclark zur Verfügung gestellt. Die Abfragegeschwindigkeit ist reduziert [[GitHub](https://github.com/imjacobclark/cors-container)].
+
+  ### [Link zur Datenplattform](https://datenplattform.darmstadt.de/#!/tiles/)
+
+  "
+
+  contact:
+    name: "Digitalstadt Darmstadt GmbH"
+    url: "https://www.digitalstadt-darmstadt.de/"
+    email: "datenplattform@digitalstadt-darmstadt.de"
+  license:
+    name: Nutzungsbedingungen
+    url: https://datenplattform.darmstadt.de/legal/nutzungsbedingungen.html
+
+servers:
+  - url: "https://datenplattform.darmstadt.de"
+  - url : "https://cors-container.herokuapp.com/https://datenplattform.darmstadt.de"
+    description: Enable CORS with free CORS-Container
+tags:
+  - name: Map
+  - name: Klimaherzen
+  - name: Corona
+  - name: Open Weather
+  - name: Smart Waste
+  - name: Environment Data
+  - name: Events
+  - name: Traffic Directions
+
+paths:
+  /Map/layers/1/features:
+    get:
+      summary: "Öffentliche WLAN Hotspots"
+      description: "Übersicht über die öffentlich WLAN Hotspots"
+      tags:
+        - Map
+      parameters:
+        - in: query
+          name: filter
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+          examples:
+            Kein Filter:
+              value: []
+            areaName:
+              value: [areaName]
+
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/publicwlanhotspots"
+
+
+
+  /Map/layers/2/features:
+    get:
+      summary: "Temperatur"
+      description: "Temperaturdaten"
+      tags:
+        - Map
+      parameters:
+        - $ref: "#/components/parameters/filter"
+
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/environment.temperature"
+
+
+  /Map/layers/3/features:
+    get:
+      summary: "Wassertemperatur"
+      # TODO add filter deviceName ?filter=deviceName
+      description: "Wassertemperatur im Woog"
+      tags:
+        - Map
+      parameters:
+        - $ref: "#/components/parameters/filter"
+
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/environment.watertemperature"
+
+  /Map/layers/4/features:
+    get:
+      summary: "Wetter Darmstadt"
+      description: "Wetter in Darmstadt"
+      tags:
+        - Map
+      parameters:
+        - in: query
+          name: filter
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+          examples:
+            Kein Filter:
+              value: []
+            temp-city:
+              value: [temp,city]
+              description: Temperatur, Stadt
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/environment.temperature"
+
+
+
+  /Map/layers/5/features:
+    get:
+      summary: "Glasscontainer"
+      description: "Füllstand der Glasscontainer in Darmstadt"
+      tags:
+        - Map
+      parameters:
+        - in: query
+          name: filter
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+          examples:
+            Kein Filter:
+              value: []
+            value-location-status:
+              value: [value, location, status]
+              description: Wert, Ort, Status
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/environment.temperature"
+
+  /Map/layers/6/features:
+    get:
+      summary: "PM10"
+      description: "PM10 Messstellen"
+      tags:
+        - Map
+      parameters:
+        - $ref: "#/components/parameters/filter"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/environment.temperature"
+
+  /Map/layers/7/features:
+    get:
+      summary: "NO2"
+      description: "NO2 Messstellen"
+      tags:
+        - Map
+      parameters:
+        - $ref: "#/components/parameters/filter"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/environment.temperature"
+
+  /Map/layers/8/features:
+    get:
+      summary: "O3"
+      description: "O3 Messstellen"
+      tags:
+        - Map
+      parameters:
+        - $ref: "#/components/parameters/filter"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/environment.temperature"
+
+  /Map/layers/9/features:
+    get:
+      summary: "Verkehrslage"
+      description: "Messstellen und Informationen zur Verkehrslage"
+      tags:
+        - Map
+      parameters:
+        - in: query
+          name: filter
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+          examples:
+            Kein Filter:
+              value: []
+            state:
+              value: [state]
+              description: State
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/environment.temperature"
+
+
+  /Map/layers/2/features/14:
+    get:
+      summary: "Datenabfrage"
+      description: "O3 Messstellen"
+      tags:
+        - Map
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/environment.temperature"
+
+  /Corona/events?date=2022-08-29T13:22:40.063Z:
+    get:
+      summary: "Coronazahlen"
+      description: "Aktuelle Coronafallzahlen aus Darmstadt"
+      tags:
+        - Corona
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/corona-events"
+
+  /SmartWaste/events?date=2022-08-29T13:22:40.065Z:
+    get:
+      summary: "Smart Waste"
+      description: "Aktuelle Coronafallzahlen aus Darmstadt"
+      tags:
+        - Smart Waste
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/smartwaste-events"
+
+  /OpenWeatherMap/events?date=2022-08-29T13%3A22%3A40.141Z:
+    get:
+      summary: "Open Weather"
+      description: "Open Weather für Darmstadt"
+      tags:
+        - Open Weather
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/open-weather-events"
+
+  /EnvironmentGeneric/events?date=2022-08-29T13%3A22%3A40.159Z:
+    get:
+      summary: "Environment Data"
+      description: "Median der Umweltsensoren von Darmstadt"
+      tags:
+        - Environment Data
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/enviroment-events"
+
+  /EnvironmentGeneric/events?since=2022-08-27T22%3A00%3A00.000Z&until=2022-08-29T13%3A22%3A40.057Z:
+    get:
+      summary: "Historic Environment Data"
+      description: "Historische Daten der Umweltsensoren von Darmstadt"
+      tags:
+        - Environment Data
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/enviroment-historic-events"
+
+
+
+
+  /ZTIXEventCalendar/events?date=2022-08-29T13%3A22%3A40.162Z:
+    get:
+      summary: "Events ZTIX"
+      description: "Zeigt Events von [ZTIX](https://www.ztix.de/hp/) an."
+      tags:
+        - Events
+      responses:
+        "200":
+          description: OK
+
+
+  /Klimaherzen/events?date=2022-08-29T13%3A22%3A40.164Z:
+    get:
+      summary: "Klimaherzen Daten"
+      description: "Zeigt Daten rund um die Klimaherzen-Aktion an. Die Daten werden mithilfe der App 'Darmstadt im Herzen' gesammelt [[Link](https://www.darmstadtimherzen.de/leben-in-darmstadt/darmstadt-im-herzen-app/)]."
+      tags:
+        - Klimaherzen
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/klimaherzen-events"
+
+
+  /TrafficDirections/events?date=2022-08-29T13%3A22%3A40.169Z:
+     get:
+      summary: "Verkehrsdaten"
+      description: "Aufgrund von 12 großen Kreuzungen um Darmstadt wird der Eingangs- und Ausgangsverkehr erfasst und in Relation gesetzt. "
+      tags:
+        - Traffic Directions
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/traffic-events"
+
+
+
+components:
+  schemas:
+    publicwlanhotspots:
+        type: object
+        properties:
+          publicwlanhotspots:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: number
+                  format: int32
+                  example: 1
+                identifier:
+                  type: string
+                  example: Wilhelminenstraße
+                geometry:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                      example: Polygon
+                    coordinates:
+                      type: array
+                      items:
+                        type: array
+                        items:
+                          type: array
+                          example: [ 8.65083, 49.87384]
+                          items:
+                            type: number
+                content:
+                  type: object
+                  properties:
+                    areaName:
+                      type: string
+                      example: Wilhelminenstraße
+
+    environment.temperature:
+        type: object
+        properties:
+            environment.temperature:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: number
+                    format: int32
+                    example: 14
+                  identifier:
+                    type: string
+                    example: 70B3D5FFFEBF64CA_temperature
+                  lng:
+                    type: number
+                    example: 8.67022277
+                  lat:
+                    type: number
+                    example: 49.8729462
+                  content:
+                    type: object
+                    properties:
+                      deviceName:
+                        type: string
+                        example: 70B3D5FFFEBF64CA
+
+    environment.watertemperature:
+        type: object
+        properties:
+          environment.watertemperature:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: number
+                  format: int32
+                  example: 13
+                identifier:
+                  type: string
+                  example: 70B3D5FFFEBF64CA_watertemperature
+                lng:
+                  type: number
+                  example: 8.67022277
+                lat:
+                  type: number
+                  example: 49.8729462
+                content:
+                  type: object
+                  properties:
+                    deviceType:
+                      type: string
+                      example: Waterquality
+                    layerTitle:
+                      type: string
+                      example: watertemperature
+                    sensorLabel:
+                      type: string
+                      example: watertemperature
+                    lon:
+                      type: number
+                      example: 8.67022277
+                    rawTimestamp:
+                      type: string
+                      example: 2022-08-26T17:01:27.081+0000
+                    deviceName:
+                      type: string
+                      example: 70B3D5FFFEBF64CA
+                    SID:
+                      type: string
+                      example: 2af4f631-237f-449e-bdd9-516351d13a4f
+                    featureIdentifier:
+                      type: string
+                      example: 70B3D5FFFEBF64CA_watertemperature
+                    belowThreshold:
+                      type: string
+                      nullable: true
+                    unit:
+                      type: string
+                      nullable: true
+                    layerName:
+                      type: string
+                      example: environment.watertemperature
+                    value:
+                      type: number
+                      example: 25.670000076293945
+                    lat:
+                      type: number
+                      example: 49.8729462
+                    timestamp:
+                      type: string
+                      example: 2022-08-26T17:01:27.252+0000
+                    upSensorDescription:
+                      type: object
+                      properties:
+                        reference:
+                          type: object
+                          properties:
+                            deviceName:
+                              type: string
+                              example: 70B3D5FFFEBF64CA
+                            sensorLabel:
+                              type: string
+                              example: watertemperature
+
+    corona-events:
+        type: object
+        properties:
+          events:
+            type: array
+            items:
+              type: object
+              properties:
+                infected:
+                  type: number
+                  example: 1950
+                secondVaccinationHistory:
+                  type: array
+                  items:
+                    type: number
+                    example: 75916
+                firstVaccinationHistory:
+                  type: array
+                  items:
+                    type: number
+                    example: 80371
+                deceased_80+:
+                  type: object
+                  properties:
+                    female:
+                      type: number
+                      example: 82
+                    male:
+                      type: number
+                      example: 60
+                deceased:
+                  type: number
+                  format: int32
+                  example: 229
+                secondVaccination:
+                  type: number
+                  format: int32
+                  example: 75916
+                sevenDayIncidencePer100k:
+                  type: number
+                  example: 234.96299646927264
+                firstVaccination:
+                  type: number
+                  format: int32
+                  example: 80371
+                deceased_0_34:
+                  type: object
+                  properties:
+                    female:
+                      type: number
+                      example: 0
+                    male:
+                      type: number
+                      example: 0
+                deceased_35_59:
+                  type: object
+                  properties:
+                    female:
+                      type: number
+                      example: 3
+                    male:
+                      type: number
+                      example: 7
+                rawTimestamp:
+                  type: string
+                  example: 2022-08-29T11:41:40.022Z
+                sevenDayIncidencePer100kHistory:
+                  type: array
+                  items:
+                    type: number
+                    example: 234.96299646927264
+                SID:
+                  type: string
+                  example: f0850ce9-be04-491a-a21b-8e4190976d13
+                _headers:
+                  type: object
+                  properties:
+                    eventType:
+                      type: string
+                      example: CoronaComprehensiveEventType
+                deceased_60_79:
+                  type: object
+                  properties:
+                    female:
+                      type: number
+                      example: 24
+                    male:
+                      type: number
+                      example: 53
+                region:
+                  type: string
+                  example: SK Darmstadt
+                infectedHistory:
+                  type: array
+                  items:
+                    type: number
+                    example: 1950
+                timestamp:
+                  type: string
+                  example: 2022-08-29T11:41:41.656+00:00
+
+    smartwaste-events:
+        type: object
+        properties:
+          events:
+            type: array
+            items:
+              type: object
+              properties:
+                connected:
+                  type: number
+                  format: int32
+                  example: 88
+                volume:
+                  type: number
+                  example: 176.76
+                fractions:
+                  type: object
+                  properties:
+                    PPK:
+                      type: number
+                      example: 0.4
+                    LVP:
+                      type: number
+                      example: 0.36
+                    Restmuell:
+                      type: number
+                      example: 0.2
+                    Glas:
+                      type: number
+                      example: 0
+                    Bio:
+                      type: number
+                      example: 0.04
+                rateRecyclPercentage:
+                  type: number
+                  example: 0.8
+                rateNonRecyclPercentage:
+                  type: number
+                  example: 0.2
+                recycleSumVolumeFromLast24HoursInQm3:
+                  type: number
+                  example: 43.64
+                nonRecycleSumVolumeFromLast24HoursInQm3:
+                  type: number
+                  example: 21.56
+                timestamp:
+                  type: string
+                  example: 2022-08-29T13:22:04.754+00:00
+
+    open-weather-events:
+        type: object
+        properties:
+          events:
+            type: array
+            items:
+              type: object
+              properties:
+                9d4d7a0f-aa19-4eb2-9d70-ff78eff2879a:
+                  type: object
+                  properties:
+                    temp:
+                      type: number
+                      example: 26.28
+                    sunrise:
+                      type: string
+                      example: 2022-08-29T04:36:03.000+0000
+                    weather_id:
+                      type: number
+                      example: 800
+                    visibility:
+                      type: number
+                      example: 10000
+                    city:
+                      type: string
+                      example: Darmstadt
+                    countrycode:
+                      type: string
+                      example: DE
+                    lon:
+                      type: number
+                      example: 8.6494
+                    pressure:
+                      type: number
+                      example: 1020
+                    clouds:
+                      type: number
+                      example: 0
+                    weather_icon:
+                      type: string
+                      example: 01d
+                    temp_max:
+                      type: number
+                      example: 28.75
+                    SID:
+                      type: string
+                      example: 9d4d7a0f-aa19-4eb2-9d70-ff78eff2879a
+                    zipcode:
+                      type: string
+                      example: "64293"
+                    _headers:
+                      type: object
+                      properties:
+                        eventType:
+                          type: string
+                          example: OpenWeatherMapEventType
+                    temp_min:
+                      type: number
+                      example: 24.86
+                    wind_deg:
+                      type: number
+                      example: 0
+                    sunset:
+                      type: string
+                      example: 2022-08-29T18:17:12.000+0000
+                    humidity:
+                      type: number
+                      example: 55
+                    wind_speed:
+                      type: number
+                      example: 2.57
+                    lat:
+                      type: number
+                      example: 49.8706
+                    timestamp:
+                      type: string
+                      example: 2022-08-29T13:22:14.503+0000
+                timestamp:
+                  type: string
+                  example: 2022-08-29T13:22:15.039+00:00
+
+    enviroment-events:
+        type: object
+        properties:
+          events:
+            type: array
+            items:
+              type: object
+              properties:
+                Darmstadt:
+                  type: object
+                  properties:
+                    no2:
+                      type: object
+                      properties:
+                        deviceType:
+                          type: string
+                          example: Median
+                        sensorLabel:
+                          type: string
+                          example: no2
+                        precision:
+                          type: number
+                          example: 1
+                        lon:
+                          type: number
+                          example: 8.65918547
+                        rawTimestamp:
+                          type: string
+                          example: 2022-08-29T13:00:00.000+0000
+                        deviceName:
+                          type: string
+                          example: Darmstadt
+                        SID:
+                          type: string
+                          example: 3ac073c4-b5b8-421d-b91a-5aa001234f7e
+                        _headers:
+                          type: object
+                          properties:
+                            eventType:
+                              type: string
+                              example: GenericEnvironmentAvgEventType
+                        belowThreshold:
+                          type: boolean
+                        unit:
+                          type: string
+                          example: µg/m³
+                        value:
+                          type: number
+                          example: 20.2
+                        lat:
+                          type: number
+                          example: 49.870879210000005
+                        timestamp:
+                          type: string
+                          example: 2022-08-29T13:20:39.253+0000
+                    o3:
+                      type: object
+                      properties:
+                        deviceType:
+                          type: string
+                          example: Median
+                        sensorLabel:
+                          type: string
+                          example: o3
+                        precision:
+                          type: number
+                          example: 1
+                        lon:
+                          type: number
+                          example: 8.66461944
+                        rawTimestamp:
+                          type: string
+                          example: 2022-08-29T13:00:00.000+0000
+                        deviceName:
+                          type: string
+                          example: Darmstadt
+                        SID:
+                          type: string
+                          example: 3ac073c4-b5b8-421d-b91a-5aa001234f7e
+                        _headers:
+                          type: object
+                          properties:
+                            eventType:
+                              type: string
+                              example: GenericEnvironmentAvgEventType
+                        belowThreshold:
+                          type: boolean
+                        unit:
+                          type: string
+                          example: µg/m³
+                        value:
+                          type: number
+                          example: 105.1
+                        lat:
+                          type: number
+                          example: 49.87230278
+                        timestamp:
+                          type: string
+                          example: 2022-08-29T13:20:39.253+0000
+                    dust_pm2.5:
+                      type: object
+                      properties:
+                        deviceType:
+                          type: string
+                          example: Median
+                        sensorLabel:
+                          type: string
+                          example: dust_pm2.5
+                        precision:
+                          type: number
+                          example: 1
+                        lon:
+                          type: number
+                          example: 8.65918547
+                        rawTimestamp:
+                          type: string
+                          example: 2022-08-29T13:00:00.000+0000
+                        deviceName:
+                          type: string
+                          example: Darmstadt
+                        SID:
+                          type: string
+                          example: 3ac073c4-b5b8-421d-b91a-5aa001234f7e
+                        _headers:
+                          type: object
+                          properties:
+                            eventType:
+                              type: string
+                              example: GenericEnvironmentAvgEventType
+                        belowThreshold:
+                          type: boolean
+                        unit:
+                          type: string
+                          example: µg/m³
+                        value:
+                          type: number
+                          example: 5.4
+                        lat:
+                          type: number
+                          example: 49.870879210000005
+                        timestamp:
+                          type: string
+                          example: 2022-08-29T13:20:39.253+0000
+                    so2:
+                      type: object
+                      properties:
+                        deviceType:
+                          type: string
+                          example: Median
+                        sensorLabel:
+                          type: string
+                          example: so2
+                        precision:
+                          type: number
+
+                          example: 1
+                        lon:
+                          type: number
+                          example: 8.66461944
+                        rawTimestamp:
+                          type: string
+                          example: 2022-08-29T13:00:00.000+0000
+                        deviceName:
+                          type: string
+                          example: Darmstadt
+                        SID:
+                          type: string
+                          example: 3ac073c4-b5b8-421d-b91a-5aa001234f7e
+                        _headers:
+                          type: object
+                          properties:
+                            eventType:
+                              type: string
+                              example: GenericEnvironmentAvgEventType
+                        belowThreshold:
+                          type: boolean
+                        unit:
+                          type: string
+                          example: µg/m³
+                        value:
+                          type: number
+                          example: 0.8
+                        lat:
+                          type: number
+                          example: 49.87230278
+                        timestamp:
+                          type: string
+                          example: 2022-08-29T13:20:39.253+0000
+                    dust_pm10:
+                      type: object
+                      properties:
+                        deviceType:
+                          type: string
+                          example: Median
+                        sensorLabel:
+                          type: string
+                          example: dust_pm10
+                        precision:
+                          type: number
+                          example: 1
+                        lon:
+                          type: number
+                          example: 8.65918547
+                        rawTimestamp:
+                          type: string
+                          example: 2022-08-29T13:00:00.000+0000
+                        deviceName:
+                          type: string
+                          example: Darmstadt
+                        SID:
+                          type: string
+                          example: 3ac073c4-b5b8-421d-b91a-5aa001234f7e
+                        _headers:
+                          type: object
+                          properties:
+                            eventType:
+                              type: string
+                              example: GenericEnvironmentAvgEventType
+                        belowThreshold:
+                          type: boolean
+                        unit:
+                          type: string
+                          example: µg/m³
+                        value:
+                          type: number
+                          example: 13.35
+                        lat:
+                          type: number
+                          example: 49.870879210000005
+                        timestamp:
+                          type: string
+                          example: 2022-08-29T13:20:39.253+0000
+                    co:
+                      type: object
+                      properties:
+                        deviceType:
+                          type: string
+                          example: Median
+                        sensorLabel:
+                          type: string
+                          example: co
+                        precision:
+                          type: number
+                          example: 1
+                        lon:
+                          type: number
+                          example: 8.65918547
+                        rawTimestamp:
+                          type: string
+                          example: 2022-08-29T13:00:00.000+0000
+                        deviceName:
+                          type: string
+                          example: Darmstadt
+                        SID:
+                          type: string
+                          example: 3ac073c4-b5b8-421d-b91a-5aa001234f7e
+                        _headers:
+                          type: object
+                          properties:
+                            eventType:
+                              type: string
+                              example: GenericEnvironmentAvgEventType
+                        belowThreshold:
+                          type: boolean
+                        unit:
+                          type: string
+                          example: mg/m³
+                        value:
+                          type: number
+                          example: 0.22
+                        lat:
+                          type: number
+                          example: 49.870879210000005
+                        timestamp:
+                          type: string
+                          example: 2022-08-29T13:20:39.253+0000
+                timestamp:
+                  type: string
+                  example: 2022-08-29T13:20:39.622+00:00
+
+    klimaherzen-events:
+        type: object
+        properties:
+          events:
+            type: array
+            items:
+              type: object
+              properties:
+                _headers:
+                  type: object
+                  properties:
+                    eventType:
+                      type: string
+                      example: KlimaherzenAggregatedEventType
+                savedCo2Emissions:
+                  type: number
+                  example: 95027.98580799998
+                walking:
+                  type: number
+                  example: 148842.735
+                cycling:
+                  type: number
+                  example: 219003.904
+                id:
+                  type: string
+                  example: datalab_klimaherzen
+                rawTimestamp:
+                  type: string
+                  example: 2022-08-30T09:00:02.216917+00:00
+                plantedTrees:
+                  type: number
+                  example: 2771
+                timestamp:
+                  type: string
+                  example: 2022-08-30T09:00:02.862+00:00
+                SID:
+                  type: string
+                  example: 24f9a2f7-eed0-4870-94ed-aa5c8e1c9ec2
+                publicTransport:
+                  type: number
+                  example: 306361.544
+
+    traffic-events:
+        type: object
+        properties:
+          events:
+            type: array
+            items:
+              type: object
+              properties:
+                incomingTrafficMeasurements:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      hour:
+                        type: number
+                        example: 16
+                      count:
+                        type: number
+                        example: 3616
+                outgoingTrafficMeasurements:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      hour:
+                        type: number
+                        example: 16
+                      count:
+                        type: number
+                        example: 3607
+                timestamp:
+                  type: string
+                  example: 2022-08-29T13:22:06.024+00:00
+
+    enviroment-historic-events:
+        type: object
+        properties:
+          events:
+            type: array
+            items:
+              type: object
+              properties:
+                Darmstadt:
+                  type: object
+                  properties:
+                    no2:
+                      type: object
+                      properties:
+                        deviceType:
+                          type: string
+                          example: Median
+                        sensorLabel:
+                          type: string
+                          example: no2
+                        precision:
+                          type: number
+                          example: 1
+                        lon:
+                          type: number
+                          example: 8.65918547
+                        rawTimestamp:
+                          type: string
+                          example: 2022-08-27T21:30:00.000+0000
+                        deviceName:
+                          type: string
+                          example: Darmstadt
+                        SID:
+                          type: string
+                          example: 3ac073c4-b5b8-421d-b91a-5aa001234f7e
+                        _headers:
+                          type: object
+                          properties:
+                            eventType:
+                              type: string
+                              example: GenericEnvironmentAvgEventType
+                        belowThreshold:
+                          type: boolean
+                        unit:
+                          type: string
+                          example: µg/m³
+                        value:
+                          type: number
+                          example: 4.85
+                        lat:
+                          type: number
+                          example: 49.870879210000005
+                        timestamp:
+                          type: string
+                          example: 2022-08-27T21:55:39.253+0000
+                    o3:
+                      type: object
+                      properties:
+                        deviceType:
+                          type: string
+                          example: Median
+                        sensorLabel:
+                          type: string
+                          example: o3
+                        precision:
+                          type: number
+                          example: 1
+                        lon:
+                          type: number
+                          example: 8.66461944
+                        rawTimestamp:
+                          type: string
+                          example: 2022-08-27T21:30:00.000+0000
+                        deviceName:
+                          type: string
+                          example: Darmstadt
+                        SID:
+                          type: string
+                          example: 3ac073c4-b5b8-421d-b91a-5aa001234f7e
+                        _headers:
+                          type: object
+                          properties:
+                            eventType:
+                              type: string
+                              example: GenericEnvironmentAvgEventType
+                        belowThreshold:
+                          type: boolean
+                        unit:
+                          type: string
+                          example: µg/m³
+                        value:
+                          type: number
+                          example: 80.2
+                        lat:
+                          type: number
+                          example: 49.87230278
+                        timestamp:
+                          type: string
+                          example: 2022-08-27T21:55:39.253+0000
+                    dust_pm2.5:
+                      type: object
+                      properties:
+                        deviceType:
+                          type: string
+                          example: Median
+                        sensorLabel:
+                          type: string
+                          example: dust_pm2.5
+                        precision:
+                          type: number
+                          example: 1
+                        lon:
+                          type: number
+                          example: 8.65918547
+                        rawTimestamp:
+                          type: string
+                          example: 2022-08-27T21:30:00.000+0000
+                        deviceName:
+                          type: string
+                          example: Darmstadt
+                        SID:
+                          type: string
+                          example: 3ac073c4-b5b8-421d-b91a-5aa001234f7e
+                        _headers:
+                          type: object
+                          properties:
+                            eventType:
+                              type: string
+                              example: GenericEnvironmentAvgEventType
+                        belowThreshold:
+                          type: boolean
+                        unit:
+                          type: string
+                          example: µg/m³
+                        value:
+                          type: number
+                          example: 5.949999999999999
+                        lat:
+                          type: number
+                          example: 49.870879210000005
+                        timestamp:
+                          type: string
+                          example: 2022-08-27T21:55:39.253+0000
+                    so2:
+                      type: object
+                      properties:
+                        deviceType:
+                          type: string
+                          example: Median
+                        sensorLabel:
+                          type: string
+                          example: so2
+                        precision:
+                          type: number
+                          example: 1
+                        lon:
+                          type: number
+                          example: 8.66461944
+                        rawTimestamp:
+                          type: string
+                          example: 2022-08-27T21:30:00.000+0000
+                        deviceName:
+                          type: string
+                          example: Darmstadt
+                        SID:
+                          type: string
+                          example: 3ac073c4-b5b8-421d-b91a-5aa001234f7e
+                        _headers:
+                          type: object
+                          properties:
+                            eventType:
+                              type: string
+                              example: GenericEnvironmentAvgEventType
+                        belowThreshold:
+                          type: boolean
+                        unit:
+                          type: string
+                          example: µg/m³
+                        value:
+                          type: number
+                          example: 0.8
+                        lat:
+                          type: number
+                          example: 49.87230278
+                        timestamp:
+                          type: string
+                          example: 2022-08-27T21:55:39.253+0000
+                    dust_pm10:
+                      type: object
+                      properties:
+                        deviceType:
+                          type: string
+                          example: Median
+                        sensorLabel:
+                          type: string
+                          example: dust_pm10
+                        precision:
+                          type: number
+                          example: 1
+                        lon:
+                          type: number
+                          example: 8.65918547
+                        rawTimestamp:
+                          type: string
+                          example: 2022-08-27T21:30:00.000+0000
+                        deviceName:
+                          type: string
+                          example: Darmstadt
+                        SID:
+                          type: string
+                          example: 3ac073c4-b5b8-421d-b91a-5aa001234f7e
+                        _headers:
+                          type: object
+                          properties:
+                            eventType:
+                              type: string
+                              example: GenericEnvironmentAvgEventType
+                        belowThreshold:
+                          type: boolean
+                        unit:
+                          type: string
+                          example: µg/m³
+                        value:
+                          type: number
+                          example: 10.8
+                        lat:
+                          type: number
+                          example: 49.870879210000005
+                        timestamp:
+                          type: string
+                          example: 2022-08-27T21:55:39.253+0000
+                    co:
+                      type: object
+                      properties:
+                        deviceType:
+                          type: string
+                          example: Median
+                        sensorLabel:
+                          type: string
+                          example: co
+                        precision:
+                          type: number
+                          example: 1
+                        lon:
+                          type: number
+                          example: 8.65918547
+                        rawTimestamp:
+                          type: string
+                          example: 2022-08-27T21:30:00.000+0000
+                        deviceName:
+                          type: string
+                          example: Darmstadt
+                        SID:
+                          type: string
+                          example: 3ac073c4-b5b8-421d-b91a-5aa001234f7e
+                        _headers:
+                          type: object
+                          properties:
+                            eventType:
+                              type: string
+                              example: GenericEnvironmentAvgEventType
+                        belowThreshold:
+                          type: boolean
+                        unit:
+                          type: string
+                          example: mg/m³
+                        value:
+                          type: number
+                          example: 0.13
+                        lat:
+                          type: number
+                          example: 49.870879210000005
+                        timestamp:
+                          type: string
+                          example: 2022-08-27T21:55:39.253+0000
+                timestamp:
+                  type: string
+                  example: 2022-08-27T22:00:00.001+00:00
+          historicValuesCount:
+            type: number
+            format: int32
+            example: 474
+
+  parameters:
+    filter:
+        in : query
+        name: filter
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+        examples:
+          Kein Filter:
+            value: []
+          deviceName:
+            value: [deviceName]
+            description: Gibt nur die Geräte und Geräteinformationen zurück
