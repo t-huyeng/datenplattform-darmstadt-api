@@ -13,7 +13,7 @@ jobs:
           run: |
              set -C; echo "extends: spectral:oas" > .spectral.yaml
         # Run Spectral
-        - uses: stoplightio/spectral-action@latest
+        - uses: stoplightio/spectral-action@0.8.2
           with:
             file_glob: openapi.yaml
             spectral_ruleset: .spectral.yaml
