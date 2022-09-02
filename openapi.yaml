@@ -30,7 +30,7 @@ info:
 
 servers:
   - url: "https://datenplattform.darmstadt.de"
-  - url : "https://cors-container.herokuapp.com/https://datenplattform.darmstadt.de"
+  # - url : "https://cors-container.herokuapp.com/https://datenplattform.darmstadt.de"
     description: Enable CORS with free CORS-Container
 tags:
   - name: Map
@@ -47,6 +47,7 @@ paths:
     get:
       summary: "Öffentliche WLAN Hotspots"
       description: "Übersicht über die öffentlich WLAN Hotspots"
+      operationId: getPublicWlanHotspots
       tags:
         - Map
       parameters:
@@ -77,6 +78,7 @@ paths:
     get:
       summary: "Temperatur"
       description: "Temperaturdaten"
+      operationId: getEnvironmentTemperature
       tags:
         - Map
       parameters:
@@ -94,8 +96,8 @@ paths:
   /Map/layers/3/features:
     get:
       summary: "Wassertemperatur"
-      # TODO add filter deviceName ?filter=deviceName
       description: "Wassertemperatur im Woog"
+      operationId: getEnvironmentWatertemperature
       tags:
         - Map
       parameters:
@@ -113,6 +115,7 @@ paths:
     get:
       summary: "Wetter Darmstadt"
       description: "Wetter in Darmstadt"
+      operationId: getWeather
       tags:
         - Map
       parameters:
@@ -132,10 +135,11 @@ paths:
       responses:
         "200":
           description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/environment.temperature"
+          # content:
+          #   application/json:
+          #     schema:
+          #     # TODO
+          #       $ref: "#/components/schemas/environment.temperature"
 
 
 
@@ -143,6 +147,7 @@ paths:
     get:
       summary: "Glasscontainer"
       description: "Füllstand der Glasscontainer in Darmstadt"
+      operationId: getGlassContainer
       tags:
         - Map
       parameters:
@@ -162,15 +167,17 @@ paths:
       responses:
         "200":
           description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/environment.temperature"
+          # content:
+          #   application/json:
+          #     schema:
+          #     # TODO
+          #       $ref: "#/components/schemas/environment.temperature"
 
   /Map/layers/6/features:
     get:
       summary: "PM10"
       description: "PM10 Messstellen"
+      operationId: getPM10
       tags:
         - Map
       parameters:
@@ -178,15 +185,17 @@ paths:
       responses:
         "200":
           description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/environment.temperature"
+          # content:
+          #   application/json:
+          #     schema:
+          #     # TODO
+          #       $ref: "#/components/schemas/environment.temperature"
 
   /Map/layers/7/features:
     get:
       summary: "NO2"
       description: "NO2 Messstellen"
+      operationId: getNO2
       tags:
         - Map
       parameters:
@@ -194,15 +203,16 @@ paths:
       responses:
         "200":
           description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/environment.temperature"
+          # content:
+          #   application/json:
+          #     schema:
+          #       $ref: "#/components/schemas/environment.temperature"
 
   /Map/layers/8/features:
     get:
       summary: "O3"
       description: "O3 Messstellen"
+      operationId: getO3
       tags:
         - Map
       parameters:
@@ -210,15 +220,16 @@ paths:
       responses:
         "200":
           description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/environment.temperature"
+          # content:
+          #   application/json:
+          #     schema:
+          #       $ref: "#/components/schemas/environment.temperature"
 
   /Map/layers/9/features:
     get:
       summary: "Verkehrslage"
       description: "Messstellen und Informationen zur Verkehrslage"
+      operationId: getTraffic
       tags:
         - Map
       parameters:
@@ -238,16 +249,18 @@ paths:
       responses:
         "200":
           description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/environment.temperature"
+          # content:
+          #   application/json:
+          #     schema:
+          #       $ref: "#/components/schemas/environment.temperature"
 
 
   /Map/layers/2/features/14:
     get:
+# TODO
       summary: "Datenabfrage"
       description: "O3 Messstellen"
+      operationId: getO3_2
       tags:
         - Map
       responses:
@@ -258,12 +271,15 @@ paths:
               schema:
                 $ref: "#/components/schemas/environment.temperature"
 
-  /Corona/events?date=2022-08-29T13:22:40.063Z:
+  /Corona/events:
     get:
       summary: "Coronazahlen"
       description: "Aktuelle Coronafallzahlen aus Darmstadt"
+      operationId: getEventsCorona
       tags:
         - Corona
+      parameters:
+        - $ref: "#/components/parameters/date"
       responses:
         "200":
           description: OK
@@ -272,12 +288,15 @@ paths:
               schema:
                 $ref: "#/components/schemas/corona-events"
 
-  /SmartWaste/events?date=2022-08-29T13:22:40.065Z:
+  /SmartWaste/events:
     get:
       summary: "Smart Waste"
       description: "Aktuelle Coronafallzahlen aus Darmstadt"
+      operationId: getEventsSmartWaste
       tags:
         - Smart Waste
+      parameters:
+        - $ref: "#/components/parameters/date"
       responses:
         "200":
           description: OK
@@ -286,12 +305,15 @@ paths:
               schema:
                 $ref: "#/components/schemas/smartwaste-events"
 
-  /OpenWeatherMap/events?date=2022-08-29T13%3A22%3A40.141Z:
+  /OpenWeatherMap/events:
     get:
       summary: "Open Weather"
       description: "Open Weather für Darmstadt"
+      operationId: getEventsOpenWeather
       tags:
         - Open Weather
+      parameters:
+        - $ref: "#/components/parameters/date"
       responses:
         "200":
           description: OK
@@ -300,12 +322,15 @@ paths:
               schema:
                 $ref: "#/components/schemas/open-weather-events"
 
-  /EnvironmentGeneric/events?date=2022-08-29T13%3A22%3A40.159Z:
+  /EnvironmentGeneric/events:
     get:
       summary: "Environment Data"
       description: "Median der Umweltsensoren von Darmstadt"
+      operationId: getEventsEnvironmentData
       tags:
         - Environment Data
+      parameters:
+        - $ref: "#/components/parameters/date"
       responses:
         "200":
           description: OK
@@ -314,40 +339,48 @@ paths:
               schema:
                 $ref: "#/components/schemas/enviroment-events"
 
-  /EnvironmentGeneric/events?since=2022-08-27T22%3A00%3A00.000Z&until=2022-08-29T13%3A22%3A40.057Z:
-    get:
-      summary: "Historic Environment Data"
-      description: "Historische Daten der Umweltsensoren von Darmstadt"
-      tags:
-        - Environment Data
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/enviroment-historic-events"
+  # /EnvironmentGeneric/events:
+  #   get:
+  #     summary: "Historic Environment Data"
+  #     description: "Historische Daten der Umweltsensoren von Darmstadt"
+  #     operationId: getEventsHistoricData
+  #     tags:
+  #       - Environment Data
+  #     parameters:
+  #       - $ref: "#/components/parameters/since"
+  #       - $ref: "#/components/parameters/until"
+  #     responses:
+  #       "200":
+  #         description: OK
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: "#/components/schemas/enviroment-historic-events"
 
 
-
-
-  /ZTIXEventCalendar/events?date=2022-08-29T13%3A22%3A40.162Z:
+  /ZTIXEventCalendar/events:
     get:
       summary: "Events ZTIX"
       description: "Zeigt Events von [ZTIX](https://www.ztix.de/hp/) an."
+      operationId: getEventsZTIX
       tags:
         - Events
+      parameters:
+        - $ref: "#/components/parameters/date"
       responses:
         "200":
           description: OK
 
 
-  /Klimaherzen/events?date=2022-08-29T13%3A22%3A40.164Z:
+  /Klimaherzen/events:
     get:
       summary: "Klimaherzen Daten"
       description: "Zeigt Daten rund um die Klimaherzen-Aktion an. Die Daten werden mithilfe der App 'Darmstadt im Herzen' gesammelt [[Link](https://www.darmstadtimherzen.de/leben-in-darmstadt/darmstadt-im-herzen-app/)]."
+      operationId: getEventsKlimaherzen
       tags:
         - Klimaherzen
+      parameters:
+        - $ref: "#/components/parameters/date"
       responses:
         "200":
           description: OK
@@ -357,12 +390,15 @@ paths:
                 $ref: "#/components/schemas/klimaherzen-events"
 
 
-  /TrafficDirections/events?date=2022-08-29T13%3A22%3A40.169Z:
+  /TrafficDirections/events":
      get:
       summary: "Verkehrsdaten"
       description: "Aufgrund von 12 großen Kreuzungen um Darmstadt wird der Eingangs- und Ausgangsverkehr erfasst und in Relation gesetzt. "
+      operationId: getEventsTraffic
       tags:
         - Traffic Directions
+      parameters:
+        - $ref: "#/components/parameters/date"
       responses:
         "200":
           description: OK
@@ -1386,12 +1422,11 @@ components:
                   example: 2022-08-27T22:00:00.001+00:00
           historicValuesCount:
             type: number
-            format: int32
             example: 474
 
   parameters:
     filter:
-        in : query
+        in: query
         name: filter
         explode: false
         schema:
@@ -1404,3 +1439,27 @@ components:
           deviceName:
             value: [deviceName]
             description: Gibt nur die Geräte und Geräteinformationen zurück
+
+    date:
+      in: query
+      name: date
+      required: false
+      schema:
+        type: string
+        example: "2022-08-29T13:22:40.063Z"
+
+    since:
+      in: query
+      name: since
+      required: false
+      schema:
+        type: string
+        example: "2022-08-27T22%3A00%3A00.000Z"
+
+    until:
+      in: query
+      name: until
+      required: false
+      schema:
+        type: string
+        example: "2022-08-29T13%3A22%3A40.057Z"
