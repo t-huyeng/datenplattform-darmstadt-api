@@ -1443,7 +1443,7 @@ components:
     date:
       in: query
       name: date
-      required: false
+      required: true
       schema:
         type: string
         example: "2022-08-29T13:22:40.063Z"
