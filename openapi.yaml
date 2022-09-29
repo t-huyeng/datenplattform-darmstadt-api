@@ -960,6 +960,7 @@ components:
                       example: trafficCongestion
                     state:
                       type: string
+                      nullable: true
                       example: FAIR
                     SID:
                       type: string
