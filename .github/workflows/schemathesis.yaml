@@ -20,9 +20,9 @@ jobs:
       - run: pip install schemathesis
       - run: pip install httpx
 
-      - name: "Extract base url from openapi.yaml"
-        uses: mikefarah/yq@master
-        with:
-          cmd: echo "base_url=$(yq -r .servers[].url openapi.yaml)" >> $GITHUB_ENV
+      # - name: "Extract base url from openapi.yaml"
+      #   uses: mikefarah/yq@master
+      #   with:
+      #     cmd: echo "base_url=$(yq -r .servers[].url openapi.yaml)" >> $GITHUB_ENV
 
       - run: schemathesis run ./openapi.yaml --base-url "https://datenplattform.darmstadt.de" --checks all --hypothesis-phases=explicit
