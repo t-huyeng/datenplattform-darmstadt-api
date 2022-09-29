@@ -1,5 +1,7 @@
 # Datenplattform Darmstadt API
 
+[![.github/workflows/openapi_check.yml](https://github.com/t-huyeng/datenplattform-darmstadt-api/actions/workflows/openapi_check.yml/badge.svg)](https://github.com/t-huyeng/datenplattform-darmstadt-api/actions/workflows/openapi_check.yml) [![.github/workflows/schemathesis.yaml](https://github.com/t-huyeng/datenplattform-darmstadt-api/actions/workflows/schemathesis.yaml/badge.svg)](https://github.com/t-huyeng/datenplattform-darmstadt-api/actions/workflows/schemathesis.yaml)
+
 Datenplattform der Wissenschaftsstadt Darmstadt
 
   Die Datenplattform soll nach Angaben der Digitalstadt Darmstadt GmbH zum Sammeln, Verarbeiten, Vernetzen, Analysieren und Visualisieren von Daten aus dem städtischen Alltag dienen.
