@@ -135,11 +135,10 @@ paths:
       responses:
         "200":
           description: OK
-          # content:
-          #   application/json:
-          #     schema:
-          #     # TODO
-          #       $ref: "#/components/schemas/environment.temperature"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/weather"
 
 
 
@@ -167,11 +166,10 @@ paths:
       responses:
         "200":
           description: OK
-          # content:
-          #   application/json:
-          #     schema:
-          #     # TODO
-          #       $ref: "#/components/schemas/environment.temperature"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/glasscontainer"
 
   /Map/layers/6/features:
     get:
@@ -185,11 +183,10 @@ paths:
       responses:
         "200":
           description: OK
-          # content:
-          #   application/json:
-          #     schema:
-          #     # TODO
-          #       $ref: "#/components/schemas/environment.temperature"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/environment.dust_pm10"
 
   /Map/layers/7/features:
     get:
@@ -203,10 +200,10 @@ paths:
       responses:
         "200":
           description: OK
-          # content:
-          #   application/json:
-          #     schema:
-          #       $ref: "#/components/schemas/environment.temperature"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/environment.no2"
 
   /Map/layers/8/features:
     get:
@@ -220,10 +217,10 @@ paths:
       responses:
         "200":
           description: OK
-          # content:
-          #   application/json:
-          #     schema:
-          #       $ref: "#/components/schemas/environment.temperature"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/environment.o3"
 
   /Map/layers/9/features:
     get:
@@ -249,15 +246,15 @@ paths:
       responses:
         "200":
           description: OK
-          # content:
-          #   application/json:
-          #     schema:
-          #       $ref: "#/components/schemas/environment.temperature"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/traffic"
 
 
   /Map/layers/2/features/14:
+  # TODO
     get:
-# TODO
       summary: "Datenabfrage"
       description: "O3 Messstellen"
       operationId: getO3_2
@@ -325,37 +322,23 @@ paths:
   /EnvironmentGeneric/events:
     get:
       summary: "Environment Data"
-      description: "Median der Umweltsensoren von Darmstadt"
+      description: "Median oder historische Daten der Umweltsensoren von Darmstadt"
       operationId: getEventsEnvironmentData
       tags:
         - Environment Data
       parameters:
         - $ref: "#/components/parameters/date"
+        - $ref: "#/components/parameters/since"
+        - $ref: "#/components/parameters/until"
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/enviroment-events"
-
-  # /EnvironmentGeneric/events:
-  #   get:
-  #     summary: "Historic Environment Data"
-  #     description: "Historische Daten der Umweltsensoren von Darmstadt"
-  #     operationId: getEventsHistoricData
-  #     tags:
-  #       - Environment Data
-  #     parameters:
-  #       - $ref: "#/components/parameters/since"
-  #       - $ref: "#/components/parameters/until"
-  #     responses:
-  #       "200":
-  #         description: OK
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: "#/components/schemas/enviroment-historic-events"
+                oneOf:
+                  - $ref: "#/components/schemas/enviroment-events"
+                  - $ref: "#/components/schemas/enviroment-historic-events"
 
 
   /ZTIXEventCalendar/events:
@@ -390,7 +373,7 @@ paths:
                 $ref: "#/components/schemas/klimaherzen-events"
 
 
-  /TrafficDirections/events":
+  /TrafficDirections/events:
      get:
       summary: "Verkehrsdaten"
       description: "Aufgrund von 12 großen Kreuzungen um Darmstadt wird der Eingangs- und Ausgangsverkehr erfasst und in Relation gesetzt. "
@@ -554,6 +537,470 @@ components:
                             sensorLabel:
                               type: string
                               example: watertemperature
+
+    weather:
+        type: object
+        properties:
+          weather.Darmstadt:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: number
+                    example: 111
+                  identifier:
+                    type: string
+                    example: 9d4d7a0f-aa19-4eb2-9d70-ff78eff2879a
+                  lng:
+                    type: number
+                    example: 8.6494
+                  lat:
+                    type: number
+                    example: 49.8706
+                  content:
+                    type: object
+                    properties:
+                      temp:
+                        type: number
+                        example: 10.55
+                      sunrise:
+                        type: string
+                        example: 2022-09-29T05:21:52.000+0000
+                      weather_id:
+                        type: number
+                        example: 804
+                      visibility:
+                        type: number
+                        example: 6000
+                      city:
+                        type: string
+                        example: Darmstadt
+                      countrycode:
+                        type: string
+                        example: DE
+                      lon:
+                        type: number
+                        example: 8.6494
+                      pressure:
+                        type: number
+                        example: 1003
+                      clouds:
+                        type: number
+                        example: 100
+                      weather_icon:
+                        type: string
+                        example: 04d
+                      temp_max:
+                        type: number
+                        example: 13.87
+                      SID:
+                        type: string
+                        example: 9d4d7a0f-aa19-4eb2-9d70-ff78eff2879a
+                      featureIdentifier:
+                        type: string
+                        example: 9d4d7a0f-aa19-4eb2-9d70-ff78eff2879a
+                      zipcode:
+                        type: string
+                        example: "64293"
+                      _headers:
+                        type: object
+                        properties:
+                          eventType:
+                            type: string
+                            example: OpenWeatherMapEventType
+                      temp_min:
+                        type: number
+                        example: 7.7
+                      wind_deg:
+                        type: number
+                        example: 220
+                      sunset:
+                        type: string
+                        example: 2022-09-29T17:09:36.000+0000
+                      humidity:
+                        type: number
+                        example: 79
+                      wind_speed:
+                        type: number
+                        example: 1.54
+                      layerName:
+                        type: string
+                        example: weather.Darmstadt
+                      lat:
+                        type: number
+                        example: 49.8706
+                      timestamp:
+                        type: string
+                        example: 2022-09-29T09:25:14.538+0000
+
+    glasscontainer:
+      type: object
+      properties:
+        wasteGlass:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: number
+                example: 648
+              identifier:
+                type: string
+                example: "2027597"
+              lng:
+                type: number
+                example: 8.674068
+              lat:
+                type: number
+                example: 49.896324
+              content:
+                type: object
+                properties:
+                  layerTitle:
+                    type: string
+                    example: WasteGlass
+                  otherTypes:
+                    type: array
+                    example: []
+                  location:
+                    type: string
+                    example: Borsdorffstraße / Strahringerplatz | An der Straßenbahnhaltestelle
+                  lon:
+                    type: number
+                    example: 8.674068
+                  layerName:
+                    type: string
+                    example: wasteGlass
+                  value:
+                    type: number
+                    example: 99
+                  lat:
+                    type: number
+                    example: 49.896324
+                  SID:
+                    type: string
+                    example: 723bd39b-f03d-40e0-b5a9-87cc847e8002
+                  timestamp:
+                    type: string
+                    example: 2022-07-19T07:01:00.705+0000
+                  featureIdentifier:
+                    type: string
+                    example: "2027597"
+                  status:
+                    type: string
+                    example: full
+
+    environment.dust_pm10:
+      type: object
+      properties:
+        environment.dust_pm10:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: number
+                  example: 331
+                identifier:
+                  type: string
+                  example: 0115_dust_pm10
+                lng:
+                  type: number
+                  example: 8.6537515
+                lat:
+                  type: number
+                  example: 49.86945564
+                content:
+                  type: object
+                  properties:
+                    deviceType:
+                      type: string
+                      example: HLNUG
+                    layerTitle:
+                      type: string
+                      example: dust_pm10
+                    sensorLabel:
+                      type: string
+                      example: dust_pm10
+                    lon:
+                      type: number
+                      example: 8.6537515
+                    rawTimestamp:
+                      type: string
+                      example: 2022-09-29T09:00:00.000+0000
+                    deviceName:
+                      type: string
+                      example: "0115"
+                    SID:
+                      type: string
+                      example: 81d93124-e972-43d0-b0af-4870ebc93fe2
+                    featureIdentifier:
+                      type: string
+                      example: 0115_dust_pm10
+                    belowThreshold:
+                      type: boolean
+                    unit:
+                      type: string
+                      example: µg/m³
+                    layerName:
+                      type: string
+                      example: environment.dust_pm10
+                    value:
+                      type: number
+                      example: 20.7
+                    lat:
+                      type: number
+                      example: 49.86945564
+                    timestamp:
+                      type: string
+                      example: 2022-09-29T09:31:23.828+0000
+                    upSensorDescription:
+                      type: object
+                      properties:
+                        reference:
+                          type: object
+                          properties:
+                            station:
+                              type: string
+                              example: "0115"
+                            eventName:
+                              type: string
+                              example: pm10
+
+    environment.no2:
+      type: object
+      properties:
+        environment.no2:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: number
+                example: 551
+              identifier:
+                type: string
+                example: 0115_no2
+              lng:
+                type: number
+                example: 8.6537515
+              lat:
+                type: number
+                example: 49.86945564
+              content:
+                type: object
+                properties:
+                  deviceType:
+                    type: string
+                    example: HLNUG
+                  layerTitle:
+                    type: string
+                    example: no2
+                  sensorLabel:
+                    type: string
+                    example: no2
+                  lon:
+                    type: number
+                    example: 8.6537515
+                  rawTimestamp:
+                    type: string
+                    example: 2022-09-29T09:00:00.000+0000
+                  deviceName:
+                    type: string
+                    example: "0115"
+                  SID:
+                    type: string
+                    example: 20365e06-9fe9-4f0b-8e0d-29ad4620fba1
+                  featureIdentifier:
+                    type: string
+                    example: 0115_no2
+                  belowThreshold:
+                    type: boolean
+                  unit:
+                    type: string
+                    example: µg/m³
+                  layerName:
+                    type: string
+                    example: environment.no2
+                  value:
+                    type: number
+                    example: 22.1
+                  lat:
+                    type: number
+                    example: 49.86945564
+                  timestamp:
+                    type: string
+                    example: 2022-09-29T09:36:23.828+0000
+                  upSensorDescription:
+                    type: object
+                    properties:
+                      reference:
+                        type: object
+                        properties:
+                          station:
+                            type: string
+                            example: "0115"
+                          eventName:
+                            type: string
+                            example: no2
+
+    environment.o3:
+      type: object
+      properties:
+        environment.o3:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: number
+                example: 441
+              identifier:
+                type: string
+                example: 0104_o3
+              lng:
+                type: number
+                example: 8.66461944
+              lat:
+                type: number
+                example: 49.87230278
+              content:
+                type: object
+                properties:
+                  deviceType:
+                    type: string
+                    example: HLNUG
+                  layerTitle:
+                    type: string
+                    example: o3
+                  sensorLabel:
+                    type: string
+                    example: o3
+                  lon:
+                    type: number
+                    example: 8.66461944
+                  rawTimestamp:
+                    type: string
+                    example: 2022-09-29T09:00:00.000+0000
+                  deviceName:
+                    type: string
+                    example: 0104
+                  SID:
+                    type: string
+                    example: 03ecbcf4-564e-4a3d-9845-ed6a9d25036b
+                  featureIdentifier:
+                    type: string
+                    example: 0104_o3
+                  belowThreshold:
+                    type: boolean
+                  unit:
+                    type: string
+                    example: µg/m³
+                  layerName:
+                    type: string
+                    example: environment.o3
+                  value:
+                    type: number
+                    example: 18.2
+                  lat:
+                    type: number
+                    example: 49.87230278
+                  timestamp:
+                    type: string
+                    example: 2022-09-29T09:36:23.828+0000
+                  upSensorDescription:
+                    type: object
+                    properties:
+                      reference:
+                        type: object
+                        properties:
+                          station:
+                            type: string
+                            example: 0104
+                          eventName:
+                            type: string
+                            example: o3
+
+    traffic:
+      type: object
+      properties:
+        trafficCongestion:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: number
+                  example: 224
+                identifier:
+                  type: string
+                  example: "120682496"
+                geometry:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                      example: LineString
+                    coordinates:
+                      type: array
+                      items:
+                        type: array
+                        items:
+                          type: number
+                          example: 8.6575842
+                content:
+                  type: object
+                  properties:
+                    wayID:
+                      type: number
+                      example: 120682496
+                    layerName:
+                      type: string
+                      example: trafficCongestion
+                    state:
+                      type: string
+                      example: FAIR
+                    SID:
+                      type: string
+                      example: 8845b203-17e6-463f-be22-eddc39764435
+                    featureIdentifier:
+                      type: string
+                      example: "120682496"
+                    timestamp:
+                      type: string
+                      example: 2022-09-29T09:36:17.234+0000
+                    upSensorDescription:
+                      type: object
+                      properties:
+                        reference:
+                          type: object
+                          properties:
+                            wayID:
+                              type: number
+                              example: 120682496
+                        geoJson:
+                          type: object
+                          properties:
+                            type:
+                              type: string
+                              example: Feature
+                            properties:
+                              type: object
+                              properties:
+                            geometry:
+                              type: object
+                              properties:
+                                type:
+                                  type: string
+                                  example: LineString
+                                coordinates:
+                                  type: array
+                                  items:
+                                    type: array
+                                    items:
+                                      type: number
+                                      example: 8.6575842
 
     corona-events:
         type: object
