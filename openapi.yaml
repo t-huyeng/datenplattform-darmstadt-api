@@ -885,7 +885,7 @@ components:
                     example: 2022-09-29T09:00:00.000+0000
                   deviceName:
                     type: string
-                    example: 0104
+                    example: "0104"
                   SID:
                     type: string
                     example: 03ecbcf4-564e-4a3d-9845-ed6a9d25036b
@@ -917,7 +917,7 @@ components:
                         properties:
                           station:
                             type: string
-                            example: 0104
+                            example: "0104"
                           eventName:
                             type: string
                             example: o3
@@ -946,9 +946,9 @@ components:
                       type: array
                       items:
                         type: array
+                        example: [8.6575842,49.8834932]
                         items:
                           type: number
-                          example: 8.6575842
                 content:
                   type: object
                   properties:
@@ -987,7 +987,7 @@ components:
                               example: Feature
                             properties:
                               type: object
-                              properties:
+                              example: {}
                             geometry:
                               type: object
                               properties:
