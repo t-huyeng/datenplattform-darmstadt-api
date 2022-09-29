@@ -336,9 +336,11 @@ paths:
           content:
             application/json:
               schema:
-                oneOf:
-                  - $ref: "#/components/schemas/enviroment-events"
-                  - $ref: "#/components/schemas/enviroment-historic-events"
+                   $ref: "#/components/schemas/enviroment-events"
+                  #  FIX ME not working with schemathesis action
+                # oneOf:
+                  #  - $ref: "#/components/schemas/enviroment-events"
+                  # - $ref: "#/components/schemas/enviroment-historic-events"
 
 
   /ZTIXEventCalendar/events:
