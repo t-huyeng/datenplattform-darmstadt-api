@@ -30,7 +30,7 @@ info:
 
 servers:
   - url: "https://datenplattform.darmstadt.de"
-  # - url : "https://cors-container.herokuapp.com/https://datenplattform.darmstadt.de"
+  - url : "https://cors-container.herokuapp.com/https://datenplattform.darmstadt.de"
     description: Enable CORS with free CORS-Container
 tags:
   - name: Map
