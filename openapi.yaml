@@ -41,6 +41,7 @@ tags:
   - name: Environment Data
   - name: Events
   - name: Traffic Directions
+  - name: Traffic
 
 paths:
   /Map/layers/1/features:
@@ -173,6 +174,7 @@ paths:
 
   /Map/layers/6/features:
     get:
+      deprecated: true
       summary: "PM10"
       description: "PM10 Messstellen"
       operationId: getPM10
@@ -190,6 +192,7 @@ paths:
 
   /Map/layers/7/features:
     get:
+      deprecated: true
       summary: "NO2"
       description: "NO2 Messstellen"
       operationId: getNO2
@@ -207,6 +210,7 @@ paths:
 
   /Map/layers/8/features:
     get:
+      deprecated: true
       summary: "O3"
       description: "O3 Messstellen"
       operationId: getO3
@@ -336,11 +340,9 @@ paths:
           content:
             application/json:
               schema:
-                   $ref: "#/components/schemas/enviroment-events"
-                  #  FIX ME not working with schemathesis action
-                # oneOf:
-                  #  - $ref: "#/components/schemas/enviroment-events"
-                  # - $ref: "#/components/schemas/enviroment-historic-events"
+                  anyOf:
+                    - $ref: "#/components/schemas/enviroment-events"
+                    - $ref: "#/components/schemas/enviroment-historic-events"
 
 
   /ZTIXEventCalendar/events:
@@ -392,7 +394,40 @@ paths:
               schema:
                 $ref: "#/components/schemas/traffic-events"
 
+  /verkehr/apps/backend/sensordata:
+    get:
+      summary: "Verkehrsdaten"
+      description: "Die Werte für die Verkehrszählung stammen aus dem Verkehrsleitsystem. Die Daten sind im CSV-Format verfügbar und werden jede Minute aktualisiert."
+      operationId: getTrafficData
+      tags:
+        - Traffic
+      parameters:
+        - $ref: "#/components/parameters/since"
+        - $ref: "#/components/parameters/until"
+        - $ref: "#/components/parameters/lsa"
+        - $ref: "#/components/parameters/customHeaders"
+      responses:
+        "200":
+          description: OK
+          # content:
+          #   application/json:
+          #     schema:
+          #       $ref: "#/components/schemas/traffic-events"
 
+  /verkehr/apps/backend/config:
+    get:
+      summary: "Sensor Konfiguration"
+      description: "Sensor Konfiguration"
+      operationId: getTrafficSensorConfig
+      tags:
+        - Traffic
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/traffic-config"
 
 components:
   schemas:
@@ -499,7 +534,8 @@ components:
                       example: 8.67022277
                     rawTimestamp:
                       type: string
-                      example: 2022-08-26T17:01:27.081+0000
+                      format: date-time
+                      example: "2022-08-26T17:01:27.081+0000"
                     deviceName:
                       type: string
                       example: 70B3D5FFFEBF64CA
@@ -526,7 +562,8 @@ components:
                       example: 49.8729462
                     timestamp:
                       type: string
-                      example: 2022-08-26T17:01:27.252+0000
+                      format: date-time
+                      example: "2022-08-26T17:01:27.252+0000"
                     upSensorDescription:
                       type: object
                       properties:
@@ -568,7 +605,8 @@ components:
                         example: 10.55
                       sunrise:
                         type: string
-                        example: 2022-09-29T05:21:52.000+0000
+                        format: date-time
+                        example: "2022-09-29T05:21:52.000+0000"
                       weather_id:
                         type: number
                         example: 804
@@ -619,7 +657,8 @@ components:
                         example: 220
                       sunset:
                         type: string
-                        example: 2022-09-29T17:09:36.000+0000
+                        format: date-time
+                        example: "2022-09-29T17:09:36.000+0000"
                       humidity:
                         type: number
                         example: 79
@@ -634,7 +673,8 @@ components:
                         example: 49.8706
                       timestamp:
                         type: string
-                        example: 2022-09-29T09:25:14.538+0000
+                        format: date-time
+                        example: "2022-09-29T09:25:14.538+0000"
 
     glasscontainer:
       type: object
@@ -685,7 +725,8 @@ components:
                     example: 723bd39b-f03d-40e0-b5a9-87cc847e8002
                   timestamp:
                     type: string
-                    example: 2022-07-19T07:01:00.705+0000
+                    format: date-time
+                    example: "2022-07-19T07:01:00.705+0000"
                   featureIdentifier:
                     type: string
                     example: "2027597"
@@ -730,7 +771,8 @@ components:
                       example: 8.6537515
                     rawTimestamp:
                       type: string
-                      example: 2022-09-29T09:00:00.000+0000
+                      format: date-time
+                      example: "2022-09-29T09:00:00.000+0000"
                     deviceName:
                       type: string
                       example: "0115"
@@ -756,7 +798,8 @@ components:
                       example: 49.86945564
                     timestamp:
                       type: string
-                      example: 2022-09-29T09:31:23.828+0000
+                      format: date-time
+                      example: "2022-09-29T09:31:23.828+0000"
                     upSensorDescription:
                       type: object
                       properties:
@@ -807,7 +850,8 @@ components:
                     example: 8.6537515
                   rawTimestamp:
                     type: string
-                    example: 2022-09-29T09:00:00.000+0000
+                    format: date-time
+                    example: "2022-09-29T09:00:00.000+0000"
                   deviceName:
                     type: string
                     example: "0115"
@@ -833,7 +877,8 @@ components:
                     example: 49.86945564
                   timestamp:
                     type: string
-                    example: 2022-09-29T09:36:23.828+0000
+                    format: date-time
+                    example: "2022-09-29T09:36:23.828+0000"
                   upSensorDescription:
                     type: object
                     properties:
@@ -884,7 +929,8 @@ components:
                     example: 8.66461944
                   rawTimestamp:
                     type: string
-                    example: 2022-09-29T09:00:00.000+0000
+                    format: date-time
+                    example: "2022-09-29T09:00:00.000+0000"
                   deviceName:
                     type: string
                     example: "0104"
@@ -910,7 +956,8 @@ components:
                     example: 49.87230278
                   timestamp:
                     type: string
-                    example: 2022-09-29T09:36:23.828+0000
+                    format: date-time
+                    example: "2022-09-29T09:36:23.828+0000"
                   upSensorDescription:
                     type: object
                     properties:
@@ -972,6 +1019,7 @@ components:
                       example: "120682496"
                     timestamp:
                       type: string
+                      format: date-time
                       example: 2022-09-29T09:36:17.234+0000
                     upSensorDescription:
                       type: object
@@ -1070,7 +1118,8 @@ components:
                       example: 7
                 rawTimestamp:
                   type: string
-                  example: 2022-08-29T11:41:40.022Z
+                  format: date-time
+                  example: "2022-08-29T11:41:40.022Z"
                 sevenDayIncidencePer100kHistory:
                   type: array
                   items:
@@ -1104,7 +1153,8 @@ components:
                     example: 1950
                 timestamp:
                   type: string
-                  example: 2022-08-29T11:41:41.656+00:00
+                  format: date-time
+                  example: "2022-08-29T11:41:41.656+00:00"
 
     smartwaste-events:
         type: object
@@ -1153,7 +1203,8 @@ components:
                   example: 21.56
                 timestamp:
                   type: string
-                  example: 2022-08-29T13:22:04.754+00:00
+                  format: date-time
+                  example: "2022-08-29T13:22:04.754+00:00"
 
     open-weather-events:
         type: object
@@ -1171,6 +1222,7 @@ components:
                       example: 26.28
                     sunrise:
                       type: string
+                      format: date-time
                       example: 2022-08-29T04:36:03.000+0000
                     weather_id:
                       type: number
@@ -1219,6 +1271,7 @@ components:
                       example: 0
                     sunset:
                       type: string
+                      format: date-time
                       example: 2022-08-29T18:17:12.000+0000
                     humidity:
                       type: number
@@ -1231,6 +1284,7 @@ components:
                       example: 49.8706
                     timestamp:
                       type: string
+                      format: date-time
                       example: 2022-08-29T13:22:14.503+0000
                 timestamp:
                   type: string
@@ -1264,6 +1318,7 @@ components:
                           example: 8.65918547
                         rawTimestamp:
                           type: string
+                          format: date-time
                           example: 2022-08-29T13:00:00.000+0000
                         deviceName:
                           type: string
@@ -1290,6 +1345,7 @@ components:
                           example: 49.870879210000005
                         timestamp:
                           type: string
+                          format: date-time
                           example: 2022-08-29T13:20:39.253+0000
                     o3:
                       type: object
@@ -1308,6 +1364,7 @@ components:
                           example: 8.66461944
                         rawTimestamp:
                           type: string
+                          format: date-time
                           example: 2022-08-29T13:00:00.000+0000
                         deviceName:
                           type: string
@@ -1334,6 +1391,7 @@ components:
                           example: 49.87230278
                         timestamp:
                           type: string
+                          format: date-time
                           example: 2022-08-29T13:20:39.253+0000
                     dust_pm2.5:
                       type: object
@@ -1352,6 +1410,7 @@ components:
                           example: 8.65918547
                         rawTimestamp:
                           type: string
+                          format: date-time
                           example: 2022-08-29T13:00:00.000+0000
                         deviceName:
                           type: string
@@ -1378,6 +1437,7 @@ components:
                           example: 49.870879210000005
                         timestamp:
                           type: string
+                          format: date-time
                           example: 2022-08-29T13:20:39.253+0000
                     so2:
                       type: object
@@ -1397,6 +1457,7 @@ components:
                           example: 8.66461944
                         rawTimestamp:
                           type: string
+                          format: date-time
                           example: 2022-08-29T13:00:00.000+0000
                         deviceName:
                           type: string
@@ -1423,6 +1484,7 @@ components:
                           example: 49.87230278
                         timestamp:
                           type: string
+                          format: date-time
                           example: 2022-08-29T13:20:39.253+0000
                     dust_pm10:
                       type: object
@@ -1441,6 +1503,7 @@ components:
                           example: 8.65918547
                         rawTimestamp:
                           type: string
+                          format: date-time
                           example: 2022-08-29T13:00:00.000+0000
                         deviceName:
                           type: string
@@ -1467,6 +1530,7 @@ components:
                           example: 49.870879210000005
                         timestamp:
                           type: string
+                          format: date-time
                           example: 2022-08-29T13:20:39.253+0000
                     co:
                       type: object
@@ -1485,6 +1549,7 @@ components:
                           example: 8.65918547
                         rawTimestamp:
                           type: string
+                          format: date-time
                           example: 2022-08-29T13:00:00.000+0000
                         deviceName:
                           type: string
@@ -1514,7 +1579,8 @@ components:
                           example: 2022-08-29T13:20:39.253+0000
                 timestamp:
                   type: string
-                  example: 2022-08-29T13:20:39.622+00:00
+                  format: date-time
+                  example: "2022-08-29T13:20:39.622+00:00"
 
     klimaherzen-events:
         type: object
@@ -1544,13 +1610,15 @@ components:
                   example: datalab_klimaherzen
                 rawTimestamp:
                   type: string
-                  example: 2022-08-30T09:00:02.216917+00:00
+                  format: date-time
+                  example: "2022-08-30T09:00:02.216917+00:00"
                 plantedTrees:
                   type: number
                   example: 2771
                 timestamp:
                   type: string
-                  example: 2022-08-30T09:00:02.862+00:00
+                  format: date-time
+                  example: "2022-08-30T09:00:02.862+00:00"
                 SID:
                   type: string
                   example: 24f9a2f7-eed0-4870-94ed-aa5c8e1c9ec2
@@ -1590,7 +1658,8 @@ components:
                         example: 3607
                 timestamp:
                   type: string
-                  example: 2022-08-29T13:22:06.024+00:00
+                  format: date-time
+                  example: "2022-08-29T13:22:06.024+00:00"
 
     enviroment-historic-events:
         type: object
@@ -1620,6 +1689,7 @@ components:
                           example: 8.65918547
                         rawTimestamp:
                           type: string
+                          format: date-time
                           example: 2022-08-27T21:30:00.000+0000
                         deviceName:
                           type: string
@@ -1646,6 +1716,7 @@ components:
                           example: 49.870879210000005
                         timestamp:
                           type: string
+                          format: date-time
                           example: 2022-08-27T21:55:39.253+0000
                     o3:
                       type: object
@@ -1664,6 +1735,7 @@ components:
                           example: 8.66461944
                         rawTimestamp:
                           type: string
+                          format: date-time
                           example: 2022-08-27T21:30:00.000+0000
                         deviceName:
                           type: string
@@ -1690,6 +1762,7 @@ components:
                           example: 49.87230278
                         timestamp:
                           type: string
+                          format: date-time
                           example: 2022-08-27T21:55:39.253+0000
                     dust_pm2.5:
                       type: object
@@ -1708,6 +1781,7 @@ components:
                           example: 8.65918547
                         rawTimestamp:
                           type: string
+                          format: date-time
                           example: 2022-08-27T21:30:00.000+0000
                         deviceName:
                           type: string
@@ -1734,6 +1808,7 @@ components:
                           example: 49.870879210000005
                         timestamp:
                           type: string
+                          format: date-time
                           example: 2022-08-27T21:55:39.253+0000
                     so2:
                       type: object
@@ -1752,6 +1827,7 @@ components:
                           example: 8.66461944
                         rawTimestamp:
                           type: string
+                          format: date-time
                           example: 2022-08-27T21:30:00.000+0000
                         deviceName:
                           type: string
@@ -1778,6 +1854,7 @@ components:
                           example: 49.87230278
                         timestamp:
                           type: string
+                          format: date-time
                           example: 2022-08-27T21:55:39.253+0000
                     dust_pm10:
                       type: object
@@ -1796,6 +1873,7 @@ components:
                           example: 8.65918547
                         rawTimestamp:
                           type: string
+                          format: date-time
                           example: 2022-08-27T21:30:00.000+0000
                         deviceName:
                           type: string
@@ -1822,6 +1900,7 @@ components:
                           example: 49.870879210000005
                         timestamp:
                           type: string
+                          format: date-time
                           example: 2022-08-27T21:55:39.253+0000
                     co:
                       type: object
@@ -1840,6 +1919,7 @@ components:
                           example: 8.65918547
                         rawTimestamp:
                           type: string
+                          format: date-time
                           example: 2022-08-27T21:30:00.000+0000
                         deviceName:
                           type: string
@@ -1866,13 +1946,48 @@ components:
                           example: 49.870879210000005
                         timestamp:
                           type: string
-                          example: 2022-08-27T21:55:39.253+0000
+                          format: date-time
+                          example: "2022-08-27T21:55:39.253+0000"
                 timestamp:
                   type: string
-                  example: 2022-08-27T22:00:00.001+00:00
+                  format: date-time
+                  example: "2022-08-27T22:00:00.001+00:00"
           historicValuesCount:
             type: number
             example: 474
+
+    traffic-config:
+      type: array
+      items:
+        type: object
+        properties:
+          ID:
+            type: string
+            example: A001
+          signalGroups:
+            type: array
+            items:
+              type: object
+              properties:
+                Nr:
+                  type: integer
+                  format: int32
+                  example: 1
+                Name:
+                  type: string
+                  example: FV1
+          detectors:
+            type: array
+            items:
+              type: object
+              properties:
+                Nr:
+                  type: integer
+                  format: int32
+                  example: 1
+                Name:
+                  type: string
+                  example: D11
 
   parameters:
     filter:
@@ -1896,6 +2011,7 @@ components:
       required: true
       schema:
         type: string
+        format: date-time
         example: "2022-08-29T13:22:40.063Z"
 
     since:
@@ -1904,7 +2020,8 @@ components:
       required: false
       schema:
         type: string
-        example: "2022-08-27T22%3A00%3A00.000Z"
+        format: date-time
+        example: "2022-08-27T22:33:00.000Z"
 
     until:
       in: query
@@ -1912,4 +2029,21 @@ components:
       required: false
       schema:
         type: string
-        example: "2022-08-29T13%3A22%3A40.057Z"
+        format: date-time
+        example: "2022-08-29T13:33:00.000Z"
+
+    lsa:
+      in: query
+      name: lsa
+      required: false
+      schema:
+        type: string
+        example: "A  1"
+
+    customHeaders:
+      in: query
+      name: CustomHeaders
+      required: false
+      schema:
+        type: boolean
+        example: true
